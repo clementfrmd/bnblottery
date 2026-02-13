@@ -5,7 +5,7 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  11142220: {
+  56: {
     AgentRaffleV2: {
       address: "0x7B0798B80acDBff9796D969bb38f513dB1306609",
       abi: [
