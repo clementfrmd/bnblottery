@@ -1,6 +1,6 @@
 "use client";
 
-import { Scroll, Ticket, Leaf, Star, Clock, Trophy, Coin, CrystalBall, Shovel } from "~~/components/icons/ACIcons";
+import { Letter, Ticket, Leaf, Star, Clock, Trophy, Coin, CrystalBall, Shovel } from "~~/components/icons/ACIcons";
 
 export default function DocsPage() {
   return (
@@ -8,7 +8,7 @@ export default function DocsPage() {
       <div className="max-w-4xl mx-auto space-y-10">
         <div className="text-center">
           <h1 className="text-3xl font-extrabold mb-2 flex items-center justify-center gap-2" style={{ color: "#D4A843" }}>
-            <Scroll size={36} /> Documentation
+            <Letter size={36} /> Documentation
           </h1>
           <p style={{ color: "#D4A843" }}>Everything you need to know about BNB Lucky Draw</p>
         </div>

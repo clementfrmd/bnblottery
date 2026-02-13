@@ -7,7 +7,7 @@ import { Bars3Icon } from "@heroicons/react/24/outline";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { SwitchTheme } from "~~/components/SwitchTheme";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
-import { Horse, Ticket, Scroll, Leaf, FireHorse } from "~~/components/icons/ACIcons";
+import { House, Ticket, Letter, Leaf, Paw } from "~~/components/icons/ACIcons";
 
 type HeaderMenuLink = {
   label: string;
@@ -16,10 +16,10 @@ type HeaderMenuLink = {
 };
 
 export const menuLinks: HeaderMenuLink[] = [
-  { label: "Home", href: "/", icon: <Horse size={18} /> },
+  { label: "Home", href: "/", icon: <House size={18} /> },
   { label: "Raffles", href: "/raffles", icon: <Ticket size={18} /> },
-  { label: "Docs", href: "/docs", icon: <Scroll size={18} /> },
-  { label: "Agents", href: "/agents", icon: <FireHorse size={18} /> },
+  { label: "Docs", href: "/docs", icon: <Letter size={18} /> },
+  { label: "Agents", href: "/agents", icon: <Paw size={18} /> },
 ];
 
 export const HeaderMenuLinks = () => {
@@ -77,7 +77,7 @@ export const Header = () => {
           </ul>
         </details>
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
-          <Horse size={36} />
+          <House size={36} />
           <div className="flex flex-col">
             <span className="font-extrabold leading-tight text-primary-content" style={{ fontFamily: "'Ma Shan Zheng', 'Nunito', sans-serif", fontSize: "1.2rem" }}>
               BNB Lucky Draw
