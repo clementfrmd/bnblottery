@@ -7,7 +7,7 @@ import { Bars3Icon } from "@heroicons/react/24/outline";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { SwitchTheme } from "~~/components/SwitchTheme";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
-import { Horse, Ticket, Scroll, Lantern, FireHorse } from "~~/components/icons/ACIcons";
+import { Horse, Ticket, Scroll, Leaf, FireHorse } from "~~/components/icons/ACIcons";
 
 type HeaderMenuLink = {
   label: string;
@@ -81,8 +81,8 @@ export const Header = () => {
           <div className="flex flex-col">
             <span className="font-extrabold leading-tight text-primary-content" style={{ fontFamily: "'Ma Shan Zheng', 'Nunito', sans-serif", fontSize: "1.2rem" }}>
               BNB Lucky Draw
-            </span>
-            <span className="text-xs text-primary-content/60 font-semibold flex items-center gap-1">Fire Horse Fortune <Lantern size={14} /></span>
+                        </span>
+            <span className="text-xs text-primary-content/60 font-semibold flex items-center gap-1">Island Lottery on BNB <Leaf size={14} /></span>
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">

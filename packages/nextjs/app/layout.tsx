@@ -6,8 +6,8 @@ import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 
 export const metadata = getMetadata({
-  title: "BNB Lucky Draw - Fire Horse Fortune",
-  description: "A lucky DeFi lottery on BNB Chain — Chinese New Year vibes, fair raffle draws, powered by VRF randomness!",
+  title: "BNB Lucky Draw - Island Lottery",
+  description: "A cozy DeFi raffle on BNB Chain — fair draws, verifiable randomness, and island vibes!",
 });
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {

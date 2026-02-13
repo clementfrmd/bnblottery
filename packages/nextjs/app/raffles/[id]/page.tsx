@@ -107,7 +107,7 @@ const ApproveAndBuy = ({
 
   if (isWrongNetwork) {
     return (
-      <button className="fh-btn ac-btn w-full justify-center" style={{ background: "#C41E3A", color: "#fff5e6" }} disabled>
+      <button className="ac-btn ac-btn w-full justify-center" style={{ background: "#D4A843", color: "#4a3b1e" }} disabled>
         Wrong Network — Switch to {targetNetwork.name}
       </button>
     );
@@ -116,7 +116,7 @@ const ApproveAndBuy = ({
   if (needsApproval) {
     return (
       <button
-        className="fh-btn ac-btn fh-btn ac-btn-lavender w-full justify-center"
+        className="ac-btn ac-btn ac-btn ac-btn-lavender w-full justify-center"
         onClick={handleApprove}
         disabled={isApproving || ticketCount <= 0}
       >
@@ -127,7 +127,7 @@ const ApproveAndBuy = ({
 
   return (
     <button
-      className="fh-btn ac-btn fh-btn ac-btn-mint w-full justify-center"
+      className="ac-btn ac-btn ac-btn ac-btn-mint w-full justify-center"
       onClick={handleBuy}
       disabled={isBuying || ticketCount <= 0}
     >
@@ -178,7 +178,7 @@ export default function RaffleDetailPage() {
   if (isLoading || !raffle) {
     return (
       <div className="flex justify-center items-center grow py-16">
-        <p className="text-fh-muted text-lg animate-gentle-bounce flex items-center gap-2">Loading raffle details... <SpinWheel size={24} /></p>
+        <p className="text-ac-muted text-lg animate-gentle-bounce flex items-center gap-2">Loading raffle details... <SpinWheel size={24} /></p>
       </div>
     );
   }
@@ -200,78 +200,78 @@ export default function RaffleDetailPage() {
     <div className="flex flex-col items-center grow px-4 py-8">
       <div className="w-full max-w-2xl animate-fade-in-up">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-fh-heading flex items-center gap-2">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-ac-heading flex items-center gap-2">
             <SlotMachine size={36} /> Raffle #{params.id as string}
           </h1>
           <span className="px-4 py-2 rounded-full text-sm font-bold"
             style={{
-              background: status.label === "Active" ? "#C41E3A" : status.label === "Winner Selected" ? "#FFA500" : "#f0ebe3",
-              color: "#fff5e6",
+              background: status.label === "Active" ? "#D4A843" : status.label === "Winner Selected" ? "#E2D1F9" : "#f0ebe3",
+              color: "#4a3b1e",
             }}>
             {status.label}
           </span>
         </div>
 
         {/* Raffle info card */}
-        <div className="fh-card ac-card p-6 mb-6" style={{ borderColor: "#DAA520", background: "linear-gradient(180deg, var(--color-base-100), var(--color-base-200))" }}>
-          <div className="grid grid-cols-2 gap-4 text-fh-muted">
+        <div className="ac-card ac-card p-6 mb-6" style={{ borderColor: "#D4A843", background: "linear-gradient(180deg, var(--color-base-100), var(--color-base-200))" }}>
+          <div className="grid grid-cols-2 gap-4 text-ac-muted">
             <div>
               <span className="text-xs uppercase tracking-wide">Organizer</span>
-              <div className="font-bold mt-1" style={{ color: "#fff5e6" }}>
-                <span className="[&_*]:!text-fh-heading [&_a]:!text-fh-heading"><Address address={raffle.organizer} /></span>
+              <div className="font-bold mt-1" style={{ color: "#4a3b1e" }}>
+                <span className="[&_*]:!text-ac-heading [&_a]:!text-ac-heading"><Address address={raffle.organizer} /></span>
               </div>
             </div>
             <div>
               <span className="text-xs uppercase tracking-wide">Token</span>
-              <p className="font-bold text-lg text-fh-heading mt-1">{token.symbol}</p>
+              <p className="font-bold text-lg text-ac-heading mt-1">{token.symbol}</p>
             </div>
             <div>
               <span className="text-xs uppercase tracking-wide">Ticket Price</span>
-              <p className="font-bold text-fh-heading mt-1">
+              <p className="font-bold text-ac-heading mt-1">
                 {formatTokenAmount(raffle.ticketPrice, token.decimals)} {token.symbol}
               </p>
             </div>
             <div>
               <span className="text-xs uppercase tracking-wide">Prize Pool</span>
-              <p className="font-extrabold text-lg mt-1 flex items-center gap-1" style={{ color: "#C41E3A" }}>
+              <p className="font-extrabold text-lg mt-1 flex items-center gap-1" style={{ color: "#D4A843" }}>
                 {prizePool} {token.symbol} <Star size={20} />
               </p>
             </div>
             <div>
               <span className="text-xs uppercase tracking-wide">Tickets Sold</span>
-              <p className="font-bold text-fh-heading mt-1">
+              <p className="font-bold text-ac-heading mt-1">
                 {raffle.totalTickets.toString()} / {raffle.maxTickets.toString()}
               </p>
             </div>
             <div>
               <span className="text-xs uppercase tracking-wide">Time Remaining</span>
-              <p className="font-bold text-fh-heading mt-1">{timeLeft}</p>
+              <p className="font-bold text-ac-heading mt-1">{timeLeft}</p>
             </div>
           </div>
 
           <div className="mt-5">
-            <div className="fh-progress ac-progress" style={{ height: "16px" }}>
-              <div className="fh-progress fh-progress-fill ac-progress-fill" style={{ width: `${Math.min(soldPercent, 100)}%` }}></div>
+            <div className="ac-progress ac-progress" style={{ height: "16px" }}>
+              <div className="ac-progress ac-progress-fill ac-progress-fill" style={{ width: `${Math.min(soldPercent, 100)}%` }}></div>
             </div>
-            <p className="text-center text-sm text-fh-muted mt-2">{soldPercent}% sold</p>
+            <p className="text-center text-sm text-ac-muted mt-2">{soldPercent}% sold</p>
           </div>
 
           {/* Fee breakdown */}
           {raffle.totalPrize > 0n && (
-            <div className="mt-4 pt-4" style={{ borderTop: "1px dashed #DAA520" }}>
-              <p className="text-xs uppercase tracking-wide text-fh-muted mb-2">Prize Distribution</p>
+            <div className="mt-4 pt-4" style={{ borderTop: "1px dashed #D4A843" }}>
+              <p className="text-xs uppercase tracking-wide text-ac-muted mb-2">Prize Distribution</p>
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-fh-muted">Winner (95%)</span>
-                  <span className="font-bold" style={{ color: "#C41E3A" }}>{winnerPrize} {token.symbol}</span>
+                  <span className="text-ac-muted">Winner (95%)</span>
+                  <span className="font-bold" style={{ color: "#D4A843" }}>{winnerPrize} {token.symbol}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-fh-muted">Platform (3%)</span>
-                  <span className="font-bold text-fh-heading">{platformFee} {token.symbol}</span>
+                  <span className="text-ac-muted">Platform (3%)</span>
+                  <span className="font-bold text-ac-heading">{platformFee} {token.symbol}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-fh-muted">Organizer (2%)</span>
-                  <span className="font-bold text-fh-heading">{organizerFee} {token.symbol}</span>
+                  <span className="text-ac-muted">Organizer (2%)</span>
+                  <span className="font-bold text-ac-heading">{organizerFee} {token.symbol}</span>
                 </div>
               </div>
             </div>
@@ -280,37 +280,37 @@ export default function RaffleDetailPage() {
 
         {/* Winner announcement */}
         {raffle.isDrawn && (
-          <div className="fh-card ac-card p-6 mb-6 text-center" style={{ borderColor: "#FFA500", background: "linear-gradient(135deg, #FFA500, #C41E3A)" }}>
-            <h2 className="text-2xl font-extrabold text-fh-heading mb-3 flex items-center justify-center gap-2">
+          <div className="ac-card ac-card p-6 mb-6 text-center" style={{ borderColor: "#E2D1F9", background: "linear-gradient(135deg, #E2D1F9, #D4A843)" }}>
+            <h2 className="text-2xl font-extrabold text-ac-heading mb-3 flex items-center justify-center gap-2">
               <Trophy size={32} /> Winner! <Trophy size={32} />
             </h2>
             <div className="flex justify-center mb-2">
-              <span className="[&_*]:!text-fh-heading [&_a]:!text-fh-heading"><Address address={raffle.winner} /></span>
+              <span className="[&_*]:!text-ac-heading [&_a]:!text-ac-heading"><Address address={raffle.winner} /></span>
             </div>
-            <p className="text-fh-muted">Winning Ticket: #{raffle.winningTicket.toString()}</p>
-            <p className="text-lg font-extrabold mt-2" style={{ color: "#C41E3A" }}>
+            <p className="text-ac-muted">Winning Ticket: #{raffle.winningTicket.toString()}</p>
+            <p className="text-lg font-extrabold mt-2" style={{ color: "#D4A843" }}>
               {winnerPrize} {token.symbol}
             </p>
             <div className="mt-4 pt-3" style={{ borderTop: "1px dashed rgba(0,0,0,0.15)" }}>
-              <p className="text-xs uppercase tracking-wide text-fh-muted mb-1">Randomness Source</p>
-              <p className="text-sm font-bold text-fh-heading">Aleph Cloud VRF</p>
-              <p className="text-xs text-fh-muted mt-1">
+              <p className="text-xs uppercase tracking-wide text-ac-muted mb-1">Randomness Source</p>
+              <p className="text-sm font-bold text-ac-heading">Aleph Cloud VRF</p>
+              <p className="text-xs text-ac-muted mt-1">
                 Verifiable Random Function — provably fair, on-chain verifiable
               </p>
               {proofLoading ? (
-                <p className="text-xs text-fh-muted mt-1">Loading proof...</p>
+                <p className="text-xs text-ac-muted mt-1">Loading proof...</p>
               ) : vrfProofUrl ? (
                 <a
                   href={vrfProofUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs mt-1 inline-block underline"
-                  style={{ color: "#C41E3A" }}
+                  style={{ color: "#D4A843" }}
                 >
                   View VRF proof (on-chain verified) →
                 </a>
               ) : (
-                <p className="text-xs text-fh-muted mt-1 italic">
+                <p className="text-xs text-ac-muted mt-1 italic">
                   Proof not available
                 </p>
               )}
@@ -320,21 +320,21 @@ export default function RaffleDetailPage() {
 
         {/* Your tickets inventory card */}
         {address && myTickets !== undefined && myTickets > 0n && (
-          <div className="fh-card ac-card p-4 mb-6 text-center" style={{ borderColor: "#FFD700" }}>
-            <div className="text-sm text-fh-muted mb-1 flex items-center justify-center gap-1"><Bag size={18} /> Your Tickets</div>
-            <p className="text-fh-heading font-extrabold text-lg flex items-center justify-center gap-1"><Ticket size={20} /> {myTickets.toString()} Ticket{myTickets > 1n ? "s" : ""}</p>
+          <div className="ac-card ac-card p-4 mb-6 text-center" style={{ borderColor: "#F5D076" }}>
+            <div className="text-sm text-ac-muted mb-1 flex items-center justify-center gap-1"><Bag size={18} /> Your Tickets</div>
+            <p className="text-ac-heading font-extrabold text-lg flex items-center justify-center gap-1"><Ticket size={20} /> {myTickets.toString()} Ticket{myTickets > 1n ? "s" : ""}</p>
           </div>
         )}
 
         {/* Buy tickets */}
         {isActive && address && maxBuyable > 0 && (
-          <div className="fh-card ac-card p-6" style={{ borderColor: "#C41E3A" }}>
-            <h2 className="text-lg font-extrabold text-fh-heading mb-4 flex items-center gap-2">
+          <div className="ac-card ac-card p-6" style={{ borderColor: "#D4A843" }}>
+            <h2 className="text-lg font-extrabold text-ac-heading mb-4 flex items-center gap-2">
               <Cart size={24} /> Buy BNB Lucky Draw Tickets
             </h2>
 
             <div className="flex items-center gap-4 mb-4">
-              <label className="text-fh-muted font-semibold">Quantity:</label>
+              <label className="text-ac-muted font-semibold">Quantity:</label>
               <input
                 type="number"
                 min={1}
@@ -343,10 +343,10 @@ export default function RaffleDetailPage() {
                 onChange={e =>
                   setTicketCount(Math.max(1, Math.min(maxBuyable, parseInt(e.target.value) || 1)))
                 }
-                className="w-24 text-center rounded-2xl border-2 px-3 py-2 font-bold text-fh-heading"
-                style={{ borderColor: "#DAA520", background: "var(--color-base-100)" }}
+                className="w-24 text-center rounded-2xl border-2 px-3 py-2 font-bold text-ac-heading"
+                style={{ borderColor: "#D4A843", background: "var(--color-base-100)" }}
               />
-              <span className="text-sm text-fh-muted">
+              <span className="text-sm text-ac-muted">
                 Total: {formatTokenAmount(raffle.ticketPrice * BigInt(ticketCount), token.decimals)}{" "}
                 {token.symbol}
               </span>
@@ -363,7 +363,7 @@ export default function RaffleDetailPage() {
         )}
 
         {!address && isActive && (
-          <div className="text-center py-6 text-fh-muted">
+          <div className="text-center py-6 text-ac-muted">
             <p className="text-lg flex items-center justify-center gap-2">Connect your wallet to play! <Ticket size={24} /></p>
           </div>
         )}
