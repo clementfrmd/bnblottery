@@ -46,7 +46,7 @@ export const Footer = () => {
             </a>
             <a href="https://www.x402.org" target="_blank" rel="noreferrer"
               className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 hover:opacity-80 transition-opacity"
-              style={{ background: "linear-gradient(135deg, #D4A843, #F5D076)", color: "#4a3b1e" }}>
+              style={{ background: "linear-gradient(135deg, #CA8A04, #CA8A04)", color: "#FEFCE8" }}>
               <X402Logo size={16} /> x402 Payments
             </a>
           </div>
@@ -56,7 +56,7 @@ export const Footer = () => {
               target="_blank"
               rel="noreferrer"
               className="font-bold hover:opacity-80 transition-opacity flex items-center gap-1.5"
-              style={{ color: "#D4A843" }}
+              style={{ color: "#CA8A04" }}
             >
               Powered by OpenClaw <OpenClawLogo size={16} />
             </a>

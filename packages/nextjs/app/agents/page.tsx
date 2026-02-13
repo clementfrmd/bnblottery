@@ -46,26 +46,26 @@ export default function AgentsPage() {
     <div className="min-h-screen px-4 py-12" style={{ fontFamily: "'Nunito', sans-serif" }}>
       <div className="max-w-4xl mx-auto space-y-10">
         <div className="text-center">
-          <h1 className="text-3xl font-extrabold mb-2 flex items-center justify-center gap-2" style={{ color: "#D4A843" }}>
+          <h1 className="text-3xl font-extrabold mb-2 flex items-center justify-center gap-2" style={{ color: "#CA8A04" }}>
             <Paw size={36} /> AI Agent Integration
           </h1>
-          <p style={{ color: "#D4A843" }}>Programmatic access to BNB Lucky Draw for autonomous agents</p>
+          <p style={{ color: "#CA8A04" }}>Programmatic access to BNB Lucky Draw for autonomous agents</p>
         </div>
 
         {/* Auth Methods */}
-        <section className="ac-card ac-card p-6" style={{ borderColor: "#D4A843" }}>
-          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#D4A843" }}><Coin size={24} /> Authentication</h2>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: "#D4A843" }}>
-            Read endpoints are <strong style={{ color: "#D4A843" }}>free and open</strong> — no auth needed.
+        <section className="cny-card cny-card p-6" style={{ borderColor: "#CA8A04" }}>
+          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#CA8A04" }}><Coin size={24} /> Authentication</h2>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: "#CA8A04" }}>
+            Read endpoints are <strong style={{ color: "#CA8A04" }}>free and open</strong> — no auth needed.
             Write endpoints support two auth methods:
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* x402 */}
-            <div className="p-4 rounded-2xl" style={{ background: "#D4A84320", border: "2px solid #D4A843" }}>
-              <h3 className="font-extrabold mb-2" style={{ color: "#D4A843" }}>x402 Micropayments</h3>
-              <p className="text-xs mb-3" style={{ color: "#D4A843" }}>Pay per-request with any EVM wallet. No accounts or API keys needed.</p>
-              <div className="space-y-2 text-xs" style={{ color: "#D4A843" }}>
+            <div className="p-4 rounded-2xl" style={{ background: "#CA8A0420", border: "2px solid #CA8A04" }}>
+              <h3 className="font-extrabold mb-2" style={{ color: "#CA8A04" }}>x402 Micropayments</h3>
+              <p className="text-xs mb-3" style={{ color: "#CA8A04" }}>Pay per-request with any EVM wallet. No accounts or API keys needed.</p>
+              <div className="space-y-2 text-xs" style={{ color: "#CA8A04" }}>
                 {[
                   "Call an endpoint",
                   <>Get <code className="px-1 py-0.5 rounded" style={{ background: "#ffe8d6" }}>402</code> with payment details</>,
@@ -74,7 +74,7 @@ export default function AgentsPage() {
                 ].map((text, i) => (
                   <div key={i} className="flex gap-2">
                     <span className="w-5 h-5 rounded-full font-bold text-[10px] flex items-center justify-center shrink-0"
-                      style={{ background: "#D4A843", color: "#4a3b1e" }}>{i + 1}</span>
+                      style={{ background: "#CA8A04", color: "#FEFCE8" }}>{i + 1}</span>
                     <span>{text}</span>
                   </div>
                 ))}
@@ -82,56 +82,56 @@ export default function AgentsPage() {
             </div>
 
             {/* API Key */}
-            <div className="p-4 rounded-2xl" style={{ background: "#F5D07620", border: "2px solid #F5D076" }}>
-              <h3 className="font-extrabold mb-2" style={{ color: "#D4A843" }}>API Key (Fallback)</h3>
-              <p className="text-xs mb-3" style={{ color: "#D4A843" }}>Simpler auth for agents that don&apos;t support x402 yet.</p>
-              <pre className="text-[10px] p-3 overflow-x-auto rounded-xl font-mono" style={{ background: "#ffe8d6", color: "#D4A843" }}>
+            <div className="p-4 rounded-2xl" style={{ background: "#CA8A0420", border: "2px solid #CA8A04" }}>
+              <h3 className="font-extrabold mb-2" style={{ color: "#CA8A04" }}>API Key (Fallback)</h3>
+              <p className="text-xs mb-3" style={{ color: "#CA8A04" }}>Simpler auth for agents that don&apos;t support x402 yet.</p>
+              <pre className="text-[10px] p-3 overflow-x-auto rounded-xl font-mono" style={{ background: "#ffe8d6", color: "#CA8A04" }}>
 {`curl -X POST \\
   -H "X-API-KEY: your-key-here" \\
   -H "Content-Type: application/json" \\
   -d '{"raffleId":0}' \\
   /api/agent/draw-winner`}
               </pre>
-              <p className="text-[10px] mt-2" style={{ color: "#D4A843" }}>Contact the BNB Lucky Draw team to request an API key.</p>
+              <p className="text-[10px] mt-2" style={{ color: "#CA8A04" }}>Contact the BNB Lucky Draw team to request an API key.</p>
             </div>
           </div>
         </section>
 
         {/* API Endpoints */}
         <section>
-          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#D4A843" }}><Sparkle size={24} /> API Endpoints</h2>
+          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#CA8A04" }}><Sparkle size={24} /> API Endpoints</h2>
           <div className="space-y-4">
             {endpoints.map((ep, i) => (
-              <div key={i} className="ac-card ac-card p-5">
+              <div key={i} className="cny-card cny-card p-5">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-bold" style={{
-                    background: ep.method === "GET" ? "#00A86B40" : "#F5D07640",
-                    color: ep.method === "GET" ? "#00A86B" : "#D4A843",
+                    background: ep.method === "GET" ? "#00A86B40" : "#CA8A0440",
+                    color: ep.method === "GET" ? "#00A86B" : "#CA8A04",
                   }}>
                     {ep.method}
                   </span>
-                  <code className="text-sm font-mono font-bold" style={{ color: "#D4A843" }}>{ep.path}</code>
+                  <code className="text-sm font-mono font-bold" style={{ color: "#CA8A04" }}>{ep.path}</code>
                   <span className="ml-auto px-2.5 py-0.5 rounded-full text-xs font-bold" style={{
                     background: ep.price === "Free" ? "#00A86B" : "#ffe8d6",
-                    color: ep.price === "Free" ? "#4a3b1e" : "#D4A843",
+                    color: ep.price === "Free" ? "#FEFCE8" : "#CA8A04",
                   }}>
                     {ep.price === "Free" ? "Free" : <><Coin size={12} className="inline-block mr-1" />{ep.price}</>}
                   </span>
                 </div>
-                <p className="text-sm" style={{ color: "#D4A843" }}>{ep.description}</p>
+                <p className="text-sm" style={{ color: "#CA8A04" }}>{ep.description}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* Code Examples */}
-        <section className="ac-card ac-card p-6">
-          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#D4A843" }}><Star size={24} /> Quick Start</h2>
+        <section className="cny-card cny-card p-6">
+          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#CA8A04" }}><Star size={24} /> Quick Start</h2>
 
           <div className="space-y-6">
             <div>
-              <h3 className="text-sm font-bold mb-2" style={{ color: "#D4A843" }}>cURL — Free reads (no auth)</h3>
-              <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#D4A843" }}>
+              <h3 className="text-sm font-bold mb-2" style={{ color: "#CA8A04" }}>cURL — Free reads (no auth)</h3>
+              <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#CA8A04" }}>
 {`# Health check
 curl https://bnbluckydraw.vercel.app/api/agent/health
 
@@ -144,8 +144,8 @@ curl https://bnbluckydraw.vercel.app/api/agent/raffle/0`}
             </div>
 
             <div>
-              <h3 className="text-sm font-bold mb-2" style={{ color: "#D4A843" }}>cURL — Write with API key</h3>
-              <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#D4A843" }}>
+              <h3 className="text-sm font-bold mb-2" style={{ color: "#CA8A04" }}>cURL — Write with API key</h3>
+              <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#CA8A04" }}>
 {`# Create a raffle (requires auth)
 curl -X POST \\
   -H "X-API-KEY: your-key-here" \\
@@ -161,8 +161,8 @@ curl -X POST \\
             </div>
 
             <div>
-              <h3 className="text-sm font-bold mb-2" style={{ color: "#D4A843" }}>Python</h3>
-              <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#D4A843" }}>
+              <h3 className="text-sm font-bold mb-2" style={{ color: "#CA8A04" }}>Python</h3>
+              <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#CA8A04" }}>
 {`import requests
 
 BASE = "https://bnbluckydraw.vercel.app"
@@ -187,8 +187,8 @@ print(resp.json())  # {"raffleId": 3, "txHash": "0x..."}`}
             </div>
 
             <div>
-              <h3 className="text-sm font-bold mb-2" style={{ color: "#D4A843" }}>TypeScript — x402 flow</h3>
-              <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#D4A843" }}>
+              <h3 className="text-sm font-bold mb-2" style={{ color: "#CA8A04" }}>TypeScript — x402 flow</h3>
+              <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#CA8A04" }}>
 {`const BASE = "https://bnbluckydraw.vercel.app";
 
 // Free reads — just fetch
@@ -220,8 +220,8 @@ const resp = await fetch(\`\${BASE}/api/agent/create-raffle\`, {
         </section>
 
         {/* Request/Response Format */}
-        <section className="ac-card ac-card p-6">
-          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#D4A843" }}><Ticket size={24} /> Request / Response Reference</h2>
+        <section className="cny-card cny-card p-6">
+          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#CA8A04" }}><Ticket size={24} /> Request / Response Reference</h2>
           <div className="space-y-4 text-sm">
             {[
               { title: "POST /api/agent/create-raffle", code: `// Request:\n{\n  "paymentToken": "0xe9e7CE...",  // ERC20 token address\n  "ticketPrice": "1000000000000000000",  // in wei\n  "maxTickets": 100,\n  "durationHours": 24\n}\n\n// Response:\n{ "raffleId": "3", "txHash": "0xabc..." }` },
@@ -229,8 +229,8 @@ const resp = await fetch(\`\${BASE}/api/agent/create-raffle\`, {
               { title: "POST /api/agent/draw-winner", code: `// Request:\n{ "raffleId": 0 }\n\n// Response:\n{\n  "winner": "0x...",\n  "winningTicket": "17",\n  "vrfHash": "0x...",\n  "txHash": "0x..."\n}` },
             ].map(item => (
               <div key={item.title}>
-                <h3 className="font-bold mb-2" style={{ color: "#D4A843" }}>{item.title}</h3>
-                <pre className="text-xs p-3 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#D4A843" }}>
+                <h3 className="font-bold mb-2" style={{ color: "#CA8A04" }}>{item.title}</h3>
+                <pre className="text-xs p-3 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#CA8A04" }}>
                   {item.code}
                 </pre>
               </div>
@@ -239,13 +239,13 @@ const resp = await fetch(\`\${BASE}/api/agent/create-raffle\`, {
         </section>
 
         {/* OpenClaw Integration */}
-        <section className="ac-card ac-card p-6" style={{ borderColor: "#D4A843" }}>
-          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#D4A843" }}><Paw size={24} /> OpenClaw Integration</h2>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: "#D4A843" }}>
-            <strong style={{ color: "#D4A843" }}>OpenClaw</strong> agents can interact with BNB Lucky Draw directly
+        <section className="cny-card cny-card p-6" style={{ borderColor: "#CA8A04" }}>
+          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#CA8A04" }}><Paw size={24} /> OpenClaw Integration</h2>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: "#CA8A04" }}>
+            <strong style={{ color: "#CA8A04" }}>OpenClaw</strong> agents can interact with BNB Lucky Draw directly
             using the built-in web_fetch tool. Read endpoints work out of the box.
           </p>
-          <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#D4A843" }}>
+          <pre className="text-xs p-4 overflow-x-auto rounded-2xl font-mono" style={{ background: "#ffe8d6", color: "#CA8A04" }}>
 {`# Free reads — just works
 web_fetch("https://bnbluckydraw.vercel.app/api/agent/health")
 web_fetch("https://bnbluckydraw.vercel.app/api/agent/raffles?status=active")
@@ -254,16 +254,16 @@ web_fetch("https://bnbluckydraw.vercel.app/api/agent/raffle/0")`}
         </section>
 
         {/* Supported Tokens */}
-        <section className="ac-card ac-card p-6">
-          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#D4A843" }}><Leaf size={24} /> Supported Tokens (BNB Chain)</h2>
+        <section className="cny-card cny-card p-6">
+          <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#CA8A04" }}><Leaf size={24} /> Supported Tokens (BNB Chain)</h2>
           <div className="space-y-2 text-sm">
             {[
               { name: "BUSD", address: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56" },
               { name: "USDT", address: "0x55d398326f99059fF775485246999027B3197955" },
               { name: "USDC", address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d" },
             ].map(t => (
-              <div key={t.name} className="flex flex-col sm:flex-row sm:items-center gap-1" style={{ color: "#D4A843" }}>
-                <span className="font-bold w-24" style={{ color: "#D4A843" }}>{t.name}</span>
+              <div key={t.name} className="flex flex-col sm:flex-row sm:items-center gap-1" style={{ color: "#CA8A04" }}>
+                <span className="font-bold w-24" style={{ color: "#CA8A04" }}>{t.name}</span>
                 <code className="break-all px-2 py-0.5 rounded-lg text-xs" style={{ background: "#ffe8d6" }}>{t.address}</code>
               </div>
             ))}

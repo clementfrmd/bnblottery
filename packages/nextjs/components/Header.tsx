@@ -7,7 +7,7 @@ import { Bars3Icon } from "@heroicons/react/24/outline";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { SwitchTheme } from "~~/components/SwitchTheme";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
-import { House, Ticket, Letter, Leaf, Paw } from "~~/components/icons/ACIcons";
+import { House, Ticket, Letter, Lantern, Paw } from "~~/components/icons/ACIcons";
 
 type HeaderMenuLink = {
   label: string;
@@ -82,7 +82,7 @@ export const Header = () => {
             <span className="font-extrabold leading-tight text-primary-content" style={{ fontFamily: "'Ma Shan Zheng', 'Nunito', sans-serif", fontSize: "1.2rem" }}>
               BNB Lucky Draw
                         </span>
-            <span className="text-xs text-primary-content/60 font-semibold flex items-center gap-1">Island Lottery on BNB <Leaf size={14} /></span>
+            <span className="text-xs text-primary-content/60 font-semibold flex items-center gap-1">Fortune Raffle on BNB <Lantern size={14} /></span>
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
