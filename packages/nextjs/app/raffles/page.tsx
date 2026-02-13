@@ -171,8 +171,8 @@ const RafflesPage: NextPage = () => {
       {allIds.map(id => <RaffleClassifier key={id} raffleId={id} onClassify={handleClassify} />)}
 
       {/* Floating lanterns */}
-      <div className="absolute top-4 right-8 opacity-30 animate-lantern-sway"><Leaf size={40} /></div>
-      <div className="absolute top-20 left-6 opacity-20 animate-lantern-sway" style={{ animationDelay: "2s" }}><Leaf size={32} /></div>
+      <div className="absolute top-4 right-8 opacity-30 animate-lantern-sway"><Lantern size={40} /></div>
+      <div className="absolute top-20 left-6 opacity-20 animate-lantern-sway" style={{ animationDelay: "2s" }}><Lantern size={32} /></div>
 
       <h1 className="text-3xl md:text-4xl font-extrabold text-cny-heading mb-2 flex items-center gap-2">
         <SlotMachine size={44} /> All Raffles
