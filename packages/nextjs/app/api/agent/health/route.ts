@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
     return Response.json({
       status: "ok",
       contract: CONTRACT_ADDRESS,
-      chain: "celo-sepolia",
-      chainId: 11142220,
+      chain: "bsc",
+      chainId: 56,
       totalRaffles: Number(counter),
       auth: {
         x402: !!process.env.THIRDWEB_SECRET_KEY,

@@ -16,7 +16,7 @@ const statusStyles: Record<string, { bg: string; border: string; text: string }>
 
 const RaffleCard = ({ raffleId, compact }: { raffleId: number; compact?: boolean }) => {
   const { data: raffle } = useScaffoldReadContract({
-    contractName: "AgentRaffleV2",
+    contractName: "AgentRaffleV3",
     functionName: "getRaffle",
     args: [BigInt(raffleId)],
   });
@@ -129,7 +129,7 @@ const RaffleCard = ({ raffleId, compact }: { raffleId: number; compact?: boolean
 
 const RaffleClassifier = ({ raffleId, onClassify }: { raffleId: number; onClassify: (id: number, isActive: boolean) => void }) => {
   const { data: raffle } = useScaffoldReadContract({
-    contractName: "AgentRaffleV2",
+    contractName: "AgentRaffleV3",
     functionName: "getRaffle",
     args: [BigInt(raffleId)],
   });
@@ -147,7 +147,7 @@ const RafflesPage: NextPage = () => {
   const [classified, setClassified] = useState<Record<number, boolean>>({});
 
   const { data: raffleCounter, isLoading } = useScaffoldReadContract({
-    contractName: "AgentRaffleV2",
+    contractName: "AgentRaffleV3",
     functionName: "raffleCounter",
   });
 

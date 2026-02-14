@@ -8,22 +8,17 @@ import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaf
 import { useTargetNetwork, useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import {
   getTokenInfo,
-  TOKEN_CONTRACTS,
   getRaffleStatus,
   formatTokenAmount,
   formatTimeRemaining,
 } from "~~/utils/celottery";
 import { Leaf, Sparkle, Ticket, Trophy, Star, Bag, Cart, SlotMachine, SpinWheel } from "~~/components/icons/ACIcons";
+import { useReadContract, useWriteContract } from "wagmi";
 
-function getTokenContractNameByAddress(
-  address: string,
-  tokenAddresses: Record<string, string>,
-): "MockcUSD" | "MockcEUR" | "MockUSDC" {
-  for (const [contractName, addr] of Object.entries(tokenAddresses)) {
-    if (addr.toLowerCase() === address.toLowerCase()) return contractName as "MockcUSD" | "MockcEUR" | "MockUSDC";
-  }
-  return "MockcUSD";
-}
+const ERC20_ABI = [
+  { inputs: [{ name: "owner", type: "address" }, { name: "spender", type: "address" }], name: "allowance", outputs: [{ type: "uint256" }], stateMutability: "view", type: "function" },
+  { inputs: [{ name: "spender", type: "address" }, { name: "amount", type: "uint256" }], name: "approve", outputs: [{ type: "bool" }], stateMutability: "nonpayable", type: "function" },
+] as const;
 
 const ApproveAndBuy = ({
   raffleId,
@@ -41,58 +36,30 @@ const ApproveAndBuy = ({
   const { address } = useAccount();
   const { targetNetwork } = useTargetNetwork();
   const totalCost = ticketPrice * BigInt(ticketCount);
-
-  const { data: cusdInfo } = useDeployedContractInfo("MockcUSD");
-  const { data: ceurInfo } = useDeployedContractInfo("MockcEUR");
-  const { data: usdcInfo } = useDeployedContractInfo("MockUSDC");
-  const { data: raffleInfo } = useDeployedContractInfo("AgentRaffleV2");
-
+  const { data: raffleInfo } = useDeployedContractInfo("AgentRaffleV3");
   const raffleAddress = raffleInfo?.address;
+  const token = getTokenInfo(tokenAddress);
 
-  const tokenAddresses: Record<string, string> = {};
-  if (cusdInfo?.address) tokenAddresses["MockcUSD"] = cusdInfo.address;
-  if (ceurInfo?.address) tokenAddresses["MockcEUR"] = ceurInfo.address;
-  if (usdcInfo?.address) tokenAddresses["MockUSDC"] = usdcInfo.address;
-
-  const tokenContractName = getTokenContractNameByAddress(tokenAddress, tokenAddresses);
-  const tokenInfo = TOKEN_CONTRACTS[tokenContractName] || { symbol: "TOKEN", decimals: 18 };
-
-  const { data: cusdAllowance } = useScaffoldReadContract({
-    contractName: "MockcUSD",
+  const { data: allowance } = useReadContract({
+    address: tokenAddress as `0x${string}`,
+    abi: ERC20_ABI,
     functionName: "allowance",
-    args: [address, raffleAddress],
-  });
-  const { data: ceurAllowance } = useScaffoldReadContract({
-    contractName: "MockcEUR",
-    functionName: "allowance",
-    args: [address, raffleAddress],
-  });
-  const { data: usdcAllowance } = useScaffoldReadContract({
-    contractName: "MockUSDC",
-    functionName: "allowance",
-    args: [address, raffleAddress],
+    args: address && raffleAddress ? [address, raffleAddress] : undefined,
   });
 
-  const allowanceMap = { MockcUSD: cusdAllowance, MockcEUR: ceurAllowance, MockUSDC: usdcAllowance };
-  const allowance = allowanceMap[tokenContractName];
   const needsApproval = allowance !== undefined && allowance < totalCost;
 
-  const { writeContractAsync: approveMockCUSD, isPending: isApprovingCUSD } = useScaffoldWriteContract({ contractName: "MockcUSD" });
-  const { writeContractAsync: approveMockCEUR, isPending: isApprovingCEUR } = useScaffoldWriteContract({ contractName: "MockcEUR" });
-  const { writeContractAsync: approveMockUSDC, isPending: isApprovingUSDC } = useScaffoldWriteContract({ contractName: "MockUSDC" });
-  const { writeContractAsync: buyTickets, isPending: isBuying } = useScaffoldWriteContract({ contractName: "AgentRaffleV2" });
-
-  const isApproving = isApprovingCUSD || isApprovingCEUR || isApprovingUSDC;
+  const { writeContractAsync: approveToken, isPending: isApproving } = useWriteContract();
+  const { writeContractAsync: buyTickets, isPending: isBuying } = useScaffoldWriteContract({ contractName: "AgentRaffleV3" });
 
   const handleApprove = async () => {
     if (!raffleAddress) return;
-    const approveArgs = {
-      functionName: "approve" as const,
-      args: [raffleAddress, totalCost] as readonly [string, bigint],
-    };
-    if (tokenContractName === "MockcUSD") await approveMockCUSD(approveArgs);
-    else if (tokenContractName === "MockcEUR") await approveMockCEUR(approveArgs);
-    else await approveMockUSDC(approveArgs);
+    await approveToken({
+      address: tokenAddress as `0x${string}`,
+      abi: ERC20_ABI,
+      functionName: "approve",
+      args: [raffleAddress, totalCost],
+    });
   };
 
   const handleBuy = async () => {
@@ -107,7 +74,7 @@ const ApproveAndBuy = ({
 
   if (isWrongNetwork) {
     return (
-      <button className="cny-btn cny-btn w-full justify-center" style={{ background: "#CA8A04", color: "#FEFCE8" }} disabled>
+      <button className="cny-btn w-full justify-center" style={{ background: "#CA8A04", color: "#FEFCE8" }} disabled>
         Wrong Network — Switch to {targetNetwork.name}
       </button>
     );
@@ -116,18 +83,18 @@ const ApproveAndBuy = ({
   if (needsApproval) {
     return (
       <button
-        className="cny-btn cny-btn cny-btn cny-btn-lavender w-full justify-center"
+        className="cny-btn cny-btn-lavender w-full justify-center"
         onClick={handleApprove}
         disabled={isApproving || ticketCount <= 0}
       >
-        {isApproving ? (<>Approving... <Leaf size={18} /></>) : (<><Sparkle size={18} /> Approve {tokenInfo.symbol}</>)}
+        {isApproving ? (<>Approving... <Leaf size={18} /></>) : (<><Sparkle size={18} /> Approve {token.symbol}</>)}
       </button>
     );
   }
 
   return (
     <button
-      className="cny-btn cny-btn cny-btn cny-btn-mint w-full justify-center"
+      className="cny-btn cny-btn-mint w-full justify-center"
       onClick={handleBuy}
       disabled={isBuying || ticketCount <= 0}
     >
@@ -146,13 +113,13 @@ export default function RaffleDetailPage() {
   const [proofLoading, setProofLoading] = useState(false);
 
   const { data: raffle, isLoading } = useScaffoldReadContract({
-    contractName: "AgentRaffleV2",
+    contractName: "AgentRaffleV3",
     functionName: "getRaffle",
     args: [raffleId],
   });
 
   const { data: myTickets } = useScaffoldReadContract({
-    contractName: "AgentRaffleV2",
+    contractName: "AgentRaffleV3",
     functionName: "getParticipantTickets",
     args: [raffleId, address],
   });
@@ -165,7 +132,6 @@ export default function RaffleDetailPage() {
     return () => clearInterval(interval);
   }, [raffle]);
 
-  // Check VRF proof availability for drawn raffles
   useEffect(() => {
     if (!raffle?.isDrawn) return;
     setProofLoading(true);
@@ -190,7 +156,6 @@ export default function RaffleDetailPage() {
   const isActive = status.label === "Active";
   const maxBuyable = Number(raffle.maxTickets - raffle.totalTickets);
 
-  // Fee breakdown (matching contract: 3% platform, 2% organizer, 95% winner)
   const totalPrizeNum = Number(raffle.totalPrize) / (10 ** token.decimals);
   const winnerPrize = (totalPrizeNum * 0.95).toFixed(2);
   const platformFee = (totalPrizeNum * 0.03).toFixed(2);
@@ -212,8 +177,7 @@ export default function RaffleDetailPage() {
           </span>
         </div>
 
-        {/* Raffle info card */}
-        <div className="cny-card cny-card p-6 mb-6" style={{ borderColor: "#CA8A04", background: "linear-gradient(180deg, var(--color-base-100), var(--color-base-200))" }}>
+        <div className="cny-card p-6 mb-6" style={{ borderColor: "#CA8A04", background: "linear-gradient(180deg, var(--color-base-100), var(--color-base-200))" }}>
           <div className="grid grid-cols-2 gap-4 text-cny-muted">
             <div>
               <span className="text-xs uppercase tracking-wide">Organizer</span>
@@ -250,13 +214,12 @@ export default function RaffleDetailPage() {
           </div>
 
           <div className="mt-5">
-            <div className="cny-progress cny-progress" style={{ height: "16px" }}>
-              <div className="cny-progress cny-progress-fill cny-progress-fill" style={{ width: `${Math.min(soldPercent, 100)}%` }}></div>
+            <div className="cny-progress" style={{ height: "16px" }}>
+              <div className="cny-progress-fill" style={{ width: `${Math.min(soldPercent, 100)}%` }}></div>
             </div>
             <p className="text-center text-sm text-cny-muted mt-2">{soldPercent}% sold</p>
           </div>
 
-          {/* Fee breakdown */}
           {raffle.totalPrize > 0n && (
             <div className="mt-4 pt-4" style={{ borderTop: "1px dashed #CA8A04" }}>
               <p className="text-xs uppercase tracking-wide text-cny-muted mb-2">Prize Distribution</p>
@@ -278,9 +241,8 @@ export default function RaffleDetailPage() {
           )}
         </div>
 
-        {/* Winner announcement */}
         {raffle.isDrawn && (
-          <div className="cny-card cny-card p-6 mb-6 text-center" style={{ borderColor: "#B91C1C", background: "linear-gradient(135deg, #B91C1C, #CA8A04)" }}>
+          <div className="cny-card p-6 mb-6 text-center" style={{ borderColor: "#B91C1C", background: "linear-gradient(135deg, #B91C1C, #CA8A04)" }}>
             <h2 className="text-2xl font-extrabold text-cny-heading mb-3 flex items-center justify-center gap-2">
               <Trophy size={32} /> Winner! <Trophy size={32} />
             </h2>
@@ -300,39 +262,29 @@ export default function RaffleDetailPage() {
               {proofLoading ? (
                 <p className="text-xs text-cny-muted mt-1">Loading proof...</p>
               ) : vrfProofUrl ? (
-                <a
-                  href={vrfProofUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs mt-1 inline-block underline"
-                  style={{ color: "#CA8A04" }}
-                >
+                <a href={vrfProofUrl} target="_blank" rel="noopener noreferrer"
+                  className="text-xs mt-1 inline-block underline" style={{ color: "#CA8A04" }}>
                   View VRF proof (on-chain verified) →
                 </a>
               ) : (
-                <p className="text-xs text-cny-muted mt-1 italic">
-                  Proof not available
-                </p>
+                <p className="text-xs text-cny-muted mt-1 italic">Proof not available</p>
               )}
             </div>
           </div>
         )}
 
-        {/* Your tickets inventory card */}
         {address && myTickets !== undefined && myTickets > 0n && (
-          <div className="cny-card cny-card p-4 mb-6 text-center" style={{ borderColor: "#CA8A04" }}>
+          <div className="cny-card p-4 mb-6 text-center" style={{ borderColor: "#CA8A04" }}>
             <div className="text-sm text-cny-muted mb-1 flex items-center justify-center gap-1"><Bag size={18} /> Your Tickets</div>
             <p className="text-cny-heading font-extrabold text-lg flex items-center justify-center gap-1"><Ticket size={20} /> {myTickets.toString()} Ticket{myTickets > 1n ? "s" : ""}</p>
           </div>
         )}
 
-        {/* Buy tickets */}
         {isActive && address && maxBuyable > 0 && (
-          <div className="cny-card cny-card p-6" style={{ borderColor: "#CA8A04" }}>
+          <div className="cny-card p-6" style={{ borderColor: "#CA8A04" }}>
             <h2 className="text-lg font-extrabold text-cny-heading mb-4 flex items-center gap-2">
               <Cart size={24} /> Buy BNB Lucky Draw Tickets
             </h2>
-
             <div className="flex items-center gap-4 mb-4">
               <label className="text-cny-muted font-semibold">Quantity:</label>
               <input
@@ -340,18 +292,14 @@ export default function RaffleDetailPage() {
                 min={1}
                 max={maxBuyable}
                 value={ticketCount}
-                onChange={e =>
-                  setTicketCount(Math.max(1, Math.min(maxBuyable, parseInt(e.target.value) || 1)))
-                }
+                onChange={e => setTicketCount(Math.max(1, Math.min(maxBuyable, parseInt(e.target.value) || 1)))}
                 className="w-24 text-center rounded-2xl border-2 px-3 py-2 font-bold text-cny-heading"
                 style={{ borderColor: "#CA8A04", background: "var(--color-base-100)" }}
               />
               <span className="text-sm text-cny-muted">
-                Total: {formatTokenAmount(raffle.ticketPrice * BigInt(ticketCount), token.decimals)}{" "}
-                {token.symbol}
+                Total: {formatTokenAmount(raffle.ticketPrice * BigInt(ticketCount), token.decimals)} {token.symbol}
               </span>
             </div>
-
             <ApproveAndBuy
               raffleId={raffleId}
               tokenAddress={raffle.paymentToken}

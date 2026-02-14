@@ -7,28 +7,21 @@ export const thirdwebClient = createThirdwebClient({
 
 export const TREASURY_ADDRESS = "0x3d5A8F83F825f4F36b145e1dAD72e3f35a3030aB";
 
-export const celoSepolia = defineChain(11142220);
+export const bscChain = defineChain(56);
 
 /**
  * Dual auth: x402 micropayments OR API key.
- * - If X-API-KEY header matches AGENT_API_KEY env var → authorized
- * - If X-PAYMENT header present → verify via x402/thirdweb
- * - If neither and price is "$0" or "free" → allow through
- * - Otherwise → return 402 with payment instructions
  */
 export async function verifyPayment(request: Request, price: string) {
-  // Free endpoints always pass
   if (price === "$0" || price === "free") {
     return { status: 200 };
   }
 
-  // API key auth (fallback for agents that don't support x402)
   const apiKey = request.headers.get("X-API-KEY");
   if (apiKey && process.env.AGENT_API_KEY && apiKey === process.env.AGENT_API_KEY) {
     return { status: 200 };
   }
 
-  // x402 payment verification
   const paymentHeader = request.headers.get("X-PAYMENT");
   if (paymentHeader) {
     try {
@@ -39,7 +32,7 @@ export async function verifyPayment(request: Request, price: string) {
         method: request.method as any,
         paymentData: paymentHeader,
         payTo: TREASURY_ADDRESS,
-        network: celoSepolia,
+        network: bscChain,
         price,
         client: thirdwebClient,
       } as any);
@@ -50,7 +43,6 @@ export async function verifyPayment(request: Request, price: string) {
     }
   }
 
-  // No auth provided — return 402 with payment instructions
   return {
     status: 402,
     responseBody: {
@@ -61,13 +53,13 @@ export async function verifyPayment(request: Request, price: string) {
           type: "x402",
           description: "Sign an x402 payment and include as X-PAYMENT header",
           payTo: TREASURY_ADDRESS,
-          network: "celo-sepolia",
-          chainId: 11142220,
+          network: "bsc",
+          chainId: 56,
         },
         {
           type: "api-key",
           description: "Include a valid API key as X-API-KEY header",
-          contact: "Request an API key from the Celottery team",
+          contact: "Request an API key from the BNB Lottery team",
         },
       ],
     },

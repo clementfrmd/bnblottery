@@ -1,35 +1,21 @@
-// Token info keyed by deployed contract name (matches SE-2 deployedContracts names)
-export const TOKEN_CONTRACTS: Record<string, { symbol: string; decimals: number; contractName: string }> = {
-  MockcUSD: { symbol: "cUSD", decimals: 18, contractName: "MockcUSD" },
-  MockcEUR: { symbol: "cEUR", decimals: 18, contractName: "MockcEUR" },
-  MockUSDC: { symbol: "USDC", decimals: 6, contractName: "MockUSDC" },
+// Token info for BNB mainnet stablecoins
+export const TOKEN_CONTRACTS: Record<string, { symbol: string; decimals: number; address: string }> = {
+  USDT: { symbol: "USDT", decimals: 18, address: "0x55d398326f99059fF775485246999027B3197955" },
+  USDC: { symbol: "USDC", decimals: 18, address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d" },
+  FDUSD: { symbol: "FDUSD", decimals: 18, address: "0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409" },
 };
 
 // Reverse lookup: token address → contract info
 export const TOKEN_MAP: Record<string, { symbol: string; decimals: number; address: string }> = {
-  "0x8De5f97Dab606845A4183CDC337d8441AF84E273": { symbol: "cUSD", decimals: 18, address: "0x8De5f97Dab606845A4183CDC337d8441AF84E273" },
-  "0x15a3391423Ec9aE478265DA3e54A7ACBC3850C41": { symbol: "cEUR", decimals: 18, address: "0x15a3391423Ec9aE478265DA3e54A7ACBC3850C41" },
-  "0x2ef9B83521fBf50515aC2859956F325f8eEcF9af": { symbol: "USDC", decimals: 6, address: "0x2ef9B83521fBf50515aC2859956F325f8eEcF9af" },
+  "0x55d398326f99059fF775485246999027B3197955": { symbol: "USDT", decimals: 18, address: "0x55d398326f99059fF775485246999027B3197955" },
+  "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d": { symbol: "USDC", decimals: 18, address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d" },
+  "0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409": { symbol: "FDUSD", decimals: 18, address: "0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409" },
 };
 
 export const TOKEN_LIST = Object.values(TOKEN_CONTRACTS);
 
 export function getTokenInfo(address: string) {
   return TOKEN_MAP[address] || { symbol: "TOKEN", decimals: 18, address };
-}
-
-export function getTokenContractName(address: string): string {
-  for (const [contractName, info] of Object.entries(TOKEN_CONTRACTS)) {
-    // Match by address from TOKEN_MAP
-    const mapEntry = Object.entries(TOKEN_MAP).find(([addr]) => {
-      const tokenInfo = TOKEN_MAP[addr];
-      return tokenInfo && tokenInfo.symbol === info.symbol;
-    });
-    if (mapEntry && mapEntry[0].toLowerCase() === address.toLowerCase()) {
-      return contractName;
-    }
-  }
-  return "MockcUSD";
 }
 
 export function formatTokenAmount(amount: bigint, decimals: number): string {

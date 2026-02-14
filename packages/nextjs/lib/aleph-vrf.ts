@@ -1,15 +1,14 @@
 /**
- * Aleph Cloud VRF - Verifiable Randomness for Celottery
+ * Aleph Cloud VRF - Verifiable Randomness for BNB Lottery
  *
  * Generates randomness from multiple entropy sources and publishes
  * a verifiable proof record to Aleph Cloud for public auditability.
  */
-
-import { keccak256, toHex, encodePacked } from "viem";
+import { encodePacked, keccak256, toHex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 const ALEPH_API = "https://api3.aleph.im";
-const ALEPH_CHANNEL = "CELOTTERY_VRF";
+const ALEPH_CHANNEL = "BNBLOTTERY_VRF";
 
 interface VRFResult {
   randomNumber: bigint;
@@ -32,7 +31,9 @@ function hexToBytes32(hex: string): Uint8Array {
 }
 
 function bytesToHex(bytes: Uint8Array): string {
-  return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /**
@@ -57,7 +58,7 @@ export async function postToAleph(proofRecord: Record<string, unknown>): Promise
   const now = Date.now() / 1000;
 
   const content = {
-    type: "celottery-vrf",
+    type: "bnblottery-vrf",
     address: account.address,
     content: proofRecord,
     time: now,
@@ -65,7 +66,9 @@ export async function postToAleph(proofRecord: Record<string, unknown>): Promise
 
   const itemContent = JSON.stringify(content);
   const itemHash = await sha256(itemContent);
-  const signature = await account.signMessage({ message: itemHash });
+  // Aleph protocol: sign "chain\nsender\ntype\nitem_hash" joined by newlines
+  const verificationBuffer = ["ETH", account.address, "POST", itemHash].join("\n");
+  const signature = await account.signMessage({ message: verificationBuffer });
 
   const body = {
     message: {
@@ -105,23 +108,20 @@ export async function postToAleph(proofRecord: Record<string, unknown>): Promise
 /**
  * Generate verifiable randomness for a raffle draw.
  */
-export async function generateVerifiableRandom(
-  raffleId: number,
-  publicClient: any,
-): Promise<VRFResult> {
+export async function generateVerifiableRandom(raffleId: number, publicClient: any): Promise<VRFResult> {
   const timestamp = Date.now();
 
   // Source 1: CSPRNG
   const csprngBytes = new Uint8Array(32);
   globalThis.crypto.getRandomValues(csprngBytes);
 
-  // Source 2: Celo block hash
+  // Source 2: BSC block hash
   const block = await publicClient.getBlock();
   const blockHash = block.hash as string;
   const blockBytes = hexToBytes32(blockHash);
 
   // Source 3: Raffle nonce
-  const nonceHash = keccak256(encodePacked(["string"], [`celottery-raffle-${raffleId}-${timestamp}`]));
+  const nonceHash = keccak256(encodePacked(["string"], [`bnblottery-raffle-${raffleId}-${timestamp}`]));
   const nonceBytes = hexToBytes32(nonceHash);
 
   // XOR all sources
@@ -130,16 +130,16 @@ export async function generateVerifiableRandom(
   const randomNumber = BigInt(combinedHex);
 
   const proofRecord = {
-    type: "celottery-vrf",
+    type: "bnblottery-vrf",
     raffleId,
     timestamp,
     blockHash,
     blockNumber: Number(block.number),
-    nonce: `celottery-raffle-${raffleId}-${timestamp}`,
+    nonce: `bnblottery-raffle-${raffleId}-${timestamp}`,
     commitment: keccak256(combinedHex),
     randomNumber: combinedHex,
-    chain: "celo-sepolia",
-    contract: "0x6b62617EBaA08D6A63584d2B2b31017C13d3C52d",
+    chain: "bsc",
+    contract: "0x0000000000000000000000000000000000000000",
   };
 
   const vrfHash = keccak256(toHex(JSON.stringify(proofRecord)));
@@ -157,7 +157,9 @@ export async function postVRFProof(proofRecord: Record<string, unknown>): Promis
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       const alephHash = await postToAleph(proofRecord);
-      console.log(`[VRF] Proof posted to Aleph (attempt ${attempt}): https://explorer.aleph.cloud/message/${alephHash}`);
+      console.log(
+        `[VRF] Proof posted to Aleph (attempt ${attempt}): https://explorer.aleph.cloud/message/${alephHash}`,
+      );
       return alephHash;
     } catch (err: any) {
       console.error(`[VRF] Aleph posting failed (attempt ${attempt}/${MAX_RETRIES}):`, {

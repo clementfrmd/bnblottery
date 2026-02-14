@@ -29,7 +29,7 @@ export default function DocsPage() {
           <h2 className="text-xl font-extrabold mb-4 flex items-center gap-2" style={{ color: "#CA8A04" }}><Shovel size={24} /> Smart Contract</h2>
           <div className="space-y-3 text-sm">
             {[
-              { label: "Contract:", value: "AgentRaffleV2" },
+              { label: "Contract:", value: "AgentRaffleV3" },
               { label: "Address:", value: "0x5904CC468E9bE48683Ae9A09d323157d648e36c6" },
               { label: "Chain:", value: "BNB Smart Chain (Chain ID: 56)", mono: false },
               { label: "RPC:", value: "https://bsc-dataseed.binance.org" },

@@ -1,19 +1,19 @@
-import { createPublicClient, createWalletClient, http, defineChain } from "viem";
+import { createPublicClient, createWalletClient, defineChain, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
-export const celoSepolia = defineChain({
-  id: 11142220,
-  name: "Celo Sepolia",
-  nativeCurrency: { name: "CELO", symbol: "CELO", decimals: 18 },
+export const bscMainnet = defineChain({
+  id: 56,
+  name: "BNB Smart Chain",
+  nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
   rpcUrls: {
-    default: { http: ["https://forno.celo-sepolia.celo-testnet.org"] },
+    default: { http: ["https://bsc-dataseed.binance.org"] },
   },
   blockExplorers: {
-    default: { name: "Celoscan", url: "https://sepolia.celoscan.io" },
+    default: { name: "BscScan", url: "https://bscscan.com" },
   },
 });
 
-export const CONTRACT_ADDRESS = "0x6b62617EBaA08D6A63584d2B2b31017C13d3C52d" as const;
+export const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
 
 export const RAFFLE_ABI = [
   {
@@ -82,7 +82,7 @@ export const RAFFLE_ABI = [
           { internalType: "uint256", name: "winningTicket", type: "uint256" },
           { internalType: "uint256", name: "totalPrize", type: "uint256" },
         ],
-        internalType: "struct AgentRaffleV2.Raffle",
+        internalType: "struct AgentRaffleV3.Raffle",
         name: "",
         type: "tuple",
       },
@@ -133,14 +133,14 @@ export function getServerAccount() {
 export function getWalletClient() {
   return createWalletClient({
     account: getServerAccount(),
-    chain: celoSepolia,
+    chain: bscMainnet,
     transport: http(),
   });
 }
 
 export function getPublicClient() {
   return createPublicClient({
-    chain: celoSepolia,
+    chain: bscMainnet,
     transport: http(),
   });
 }

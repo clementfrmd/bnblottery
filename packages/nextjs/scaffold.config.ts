@@ -17,7 +17,7 @@ const scaffoldConfig = {
   targetNetworks: [chains.bsc],
   pollingInterval: 3000,
   alchemyApiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || DEFAULT_ALCHEMY_API_KEY,
-  rpcOverrides: {},
+  rpcOverrides: { 56: "https://bsc-dataseed.binance.org" },
   walletConnectProjectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "3a8170812b534d0ff9d794f19a901d64",
   onlyLocalBurnerWallet: false,
 } as const satisfies ScaffoldConfig;
