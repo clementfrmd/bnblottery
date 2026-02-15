@@ -17,8 +17,8 @@ export async function GET(request: NextRequest) {
     return Response.json({
       status: "ok",
       contract: CONTRACT_ADDRESS,
-      chain: "bsc",
-      chainId: 56,
+      chain: process.env.NEXT_PUBLIC_NETWORK === "testnet" ? "bsc-testnet" : "bsc",
+      chainId: process.env.NEXT_PUBLIC_NETWORK === "testnet" ? 97 : 56,
       totalRaffles: Number(counter),
       auth: {
         x402: !!process.env.THIRDWEB_SECRET_KEY,

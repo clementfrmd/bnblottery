@@ -46,8 +46,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       totalTickets: Number(raffle.totalTickets),
       totalPrize: raffle.totalPrize.toString(),
       contract: CONTRACT_ADDRESS,
-      chain: "bsc",
-      chainId: 56,
+      chain: process.env.NEXT_PUBLIC_NETWORK === "testnet" ? "bsc-testnet" : "bsc",
+      chainId: process.env.NEXT_PUBLIC_NETWORK === "testnet" ? 97 : 56,
       verification: "The vrfHash is stored on-chain and can be independently verified by calling vrfHashes(raffleId) on the contract.",
     });
   } catch (error: any) {

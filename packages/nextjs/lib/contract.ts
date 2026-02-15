@@ -13,7 +13,26 @@ export const bscMainnet = defineChain({
   },
 });
 
-export const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
+export const bscTestnet = defineChain({
+  id: 97,
+  name: "BNB Smart Chain Testnet",
+  nativeCurrency: { name: "tBNB", symbol: "tBNB", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://data-seed-prebsc-1-s1.bnbchain.org:8545"] },
+  },
+  blockExplorers: {
+    default: { name: "BscScan Testnet", url: "https://testnet.bscscan.com" },
+  },
+  testnet: true,
+});
+
+const IS_TESTNET = process.env.NEXT_PUBLIC_NETWORK === "testnet";
+
+export const activeChain = IS_TESTNET ? bscTestnet : bscMainnet;
+
+export const CONTRACT_ADDRESS = (IS_TESTNET
+  ? "0x0ebC3201aaD226f933e256c6FDC0c55Ed9290934"
+  : "0x0000000000000000000000000000000000000000") as `0x${string}`;
 
 export const RAFFLE_ABI = [
   {
@@ -133,14 +152,14 @@ export function getServerAccount() {
 export function getWalletClient() {
   return createWalletClient({
     account: getServerAccount(),
-    chain: bscMainnet,
+    chain: activeChain,
     transport: http(),
   });
 }
 
 export function getPublicClient() {
   return createPublicClient({
-    chain: bscMainnet,
+    chain: activeChain,
     transport: http(),
   });
 }
