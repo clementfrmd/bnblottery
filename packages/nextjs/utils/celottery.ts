@@ -5,17 +5,15 @@ export const TOKEN_CONTRACTS: Record<string, { symbol: string; decimals: number;
   FDUSD: { symbol: "FDUSD", decimals: 18, address: "0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409" },
 };
 
-// Reverse lookup: token address → contract info
-export const TOKEN_MAP: Record<string, { symbol: string; decimals: number; address: string }> = {
-  "0x55d398326f99059fF775485246999027B3197955": { symbol: "USDT", decimals: 18, address: "0x55d398326f99059fF775485246999027B3197955" },
-  "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d": { symbol: "USDC", decimals: 18, address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d" },
-  "0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409": { symbol: "FDUSD", decimals: 18, address: "0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409" },
-};
+// Reverse lookup: token address (lowercase) → contract info
+const TOKEN_MAP: Record<string, { symbol: string; decimals: number; address: string }> = Object.fromEntries(
+  Object.values(TOKEN_CONTRACTS).map(t => [t.address.toLowerCase(), t]),
+);
 
 export const TOKEN_LIST = Object.values(TOKEN_CONTRACTS);
 
 export function getTokenInfo(address: string) {
-  return TOKEN_MAP[address] || { symbol: "TOKEN", decimals: 18, address };
+  return TOKEN_MAP[address.toLowerCase()] || { symbol: "TOKEN", decimals: 18, address };
 }
 
 export function formatTokenAmount(amount: bigint, decimals: number): string {

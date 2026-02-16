@@ -1,24 +1,10 @@
 import { NextRequest } from "next/server";
 import { decodeEventLog } from "viem";
 import { verifyPayment, paymentError } from "~~/lib/x402";
-import { getWalletClient, getPublicClient, CONTRACT_ADDRESS, RAFFLE_ABI } from "~~/lib/contract";
+import { getWalletClient, getPublicClient, CONTRACT_ADDRESS, RAFFLE_ABI, WINNER_SELECTED_ABI } from "~~/lib/contract";
 import { generateVerifiableRandom, postVRFProof } from "~~/lib/aleph-vrf";
 import { checkRateLimit } from "~~/lib/rate-limit";
 import { validateApiKey } from "~~/lib/api-auth";
-
-const WINNER_SELECTED_ABI = [
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: "uint256", name: "raffleId", type: "uint256" },
-      { indexed: true, internalType: "address", name: "winner", type: "address" },
-      { indexed: false, internalType: "uint256", name: "winningTicket", type: "uint256" },
-      { indexed: false, internalType: "bytes32", name: "vrfHash", type: "bytes32" },
-    ],
-    name: "WinnerSelected",
-    type: "event",
-  },
-] as const;
 
 export async function POST(request: NextRequest) {
   try {

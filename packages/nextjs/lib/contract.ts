@@ -142,6 +142,20 @@ export const RAFFLE_ABI = [
   },
 ] as const;
 
+export const WINNER_SELECTED_ABI = [
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "uint256", name: "raffleId", type: "uint256" },
+      { indexed: true, internalType: "address", name: "winner", type: "address" },
+      { indexed: false, internalType: "uint256", name: "winningTicket", type: "uint256" },
+      { indexed: false, internalType: "bytes32", name: "vrfHash", type: "bytes32" },
+    ],
+    name: "WinnerSelected",
+    type: "event",
+  },
+] as const;
+
 export function getServerAccount() {
   if (!process.env.DEPLOYER_PRIVATE_KEY) {
     throw new Error("DEPLOYER_PRIVATE_KEY not set");

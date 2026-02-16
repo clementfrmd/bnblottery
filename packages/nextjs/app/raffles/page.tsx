@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
@@ -23,7 +23,7 @@ const RaffleCard = ({ raffleId, compact }: { raffleId: number; compact?: boolean
 
   if (!raffle) {
     return (
-      <div className="cny-card cny-card p-6 animate-pulse">
+      <div className="cny-card p-6 animate-pulse">
         <div className="h-6 rounded-full w-1/2 mb-4" style={{ background: "var(--color-base-300)" }}></div>
         <div className="h-4 rounded-full w-full mb-2" style={{ background: "var(--color-base-300)" }}></div>
         <div className="h-4 rounded-full w-3/4" style={{ background: "var(--color-base-300)" }}></div>
@@ -40,7 +40,7 @@ const RaffleCard = ({ raffleId, compact }: { raffleId: number; compact?: boolean
   if (compact) {
     return (
       <Link href={`/raffles/${raffleId}`}>
-        <div className="cny-card cny-card p-6 cursor-pointer hover:scale-[1.02] transition-transform opacity-60 hover:opacity-90" style={{ borderColor: style.border }}>
+        <div className="cny-card p-6 cursor-pointer hover:scale-[1.02] transition-transform opacity-60 hover:opacity-90" style={{ borderColor: style.border }}>
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-2">
               <SlotMachine size={32} />
@@ -69,8 +69,8 @@ const RaffleCard = ({ raffleId, compact }: { raffleId: number; compact?: boolean
               <span>Tickets Sold</span>
               <span className="font-bold text-cny-heading">{raffle.totalTickets.toString()}/{raffle.maxTickets.toString()}</span>
             </div>
-            <div className="cny-progress cny-progress">
-              <div className="cny-progress-fill cny-progress-fill" style={{ width: `${Math.min(soldPercent, 100)}%` }}></div>
+            <div className="cny-progress">
+              <div className="cny-progress-fill" style={{ width: `${Math.min(soldPercent, 100)}%` }}></div>
             </div>
             {raffle.isDrawn && raffle.winner && raffle.winner !== "0x0000000000000000000000000000000000000000" && (
               <div className="flex justify-between items-center">
@@ -86,7 +86,7 @@ const RaffleCard = ({ raffleId, compact }: { raffleId: number; compact?: boolean
 
   return (
     <Link href={`/raffles/${raffleId}`}>
-      <div className="cny-card cny-card p-6 cursor-pointer hover:scale-[1.02] transition-transform" style={{ borderColor: style.border }}>
+      <div className="cny-card p-6 cursor-pointer hover:scale-[1.02] transition-transform" style={{ borderColor: style.border }}>
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center gap-2">
             <SlotMachine size={36} />
@@ -113,8 +113,8 @@ const RaffleCard = ({ raffleId, compact }: { raffleId: number; compact?: boolean
             <span className="font-bold text-cny-heading">{raffle.totalTickets.toString()}/{raffle.maxTickets.toString()}</span>
           </div>
 
-          <div className="cny-progress cny-progress">
-            <div className="cny-progress-fill cny-progress-fill" style={{ width: `${Math.min(soldPercent, 100)}%` }}></div>
+          <div className="cny-progress">
+            <div className="cny-progress-fill" style={{ width: `${Math.min(soldPercent, 100)}%` }}></div>
           </div>
 
           <div className="flex justify-between">
@@ -154,12 +154,12 @@ const RafflesPage: NextPage = () => {
   const count = raffleCounter ? Number(raffleCounter) : 0;
   const allIds = Array.from({ length: count }, (_, i) => i);
 
-  const handleClassify = (id: number, isActive: boolean) => {
+  const handleClassify = useCallback((id: number, isActive: boolean) => {
     setClassified(prev => {
       if (prev[id] === isActive) return prev;
       return { ...prev, [id]: isActive };
     });
-  };
+  }, []);
 
   const activeIds = allIds.filter(id => classified[id] === true);
   const pastIds = allIds.filter(id => classified[id] === false).reverse();
@@ -184,7 +184,7 @@ const RafflesPage: NextPage = () => {
       ) : count === 0 ? (
         <div className="text-center animate-fade-in-up">
           <p className="text-cny-muted text-lg mb-4 flex items-center justify-center gap-2">No raffles yet — AI agents will create them soon! <Paw size={24} /></p>
-          <Link href="/agents" className="cny-btn cny-btn-red cny-btn cny-btn-mint">
+          <Link href="/agents" className="cny-btn cny-btn-mint">
             <Paw size={20} /> Meet the Agents
           </Link>
         </div>

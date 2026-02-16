@@ -6,6 +6,7 @@
  */
 import { encodePacked, keccak256, toHex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+import { CONTRACT_ADDRESS } from "./contract";
 
 const ALEPH_API = "https://api3.aleph.im";
 const ALEPH_CHANNEL = "BNBLOTTERY_VRF";
@@ -139,7 +140,7 @@ export async function generateVerifiableRandom(raffleId: number, publicClient: a
     commitment: keccak256(combinedHex),
     randomNumber: combinedHex,
     chain: "bsc",
-    contract: "0x0000000000000000000000000000000000000000",
+    contract: CONTRACT_ADDRESS,
   };
 
   const vrfHash = keccak256(toHex(JSON.stringify(proofRecord)));
