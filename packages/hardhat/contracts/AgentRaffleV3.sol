@@ -27,8 +27,6 @@ contract AgentRaffleV3 is Ownable, ReentrancyGuard {
 
     uint256 public constant MAX_TOTAL_FEE_BPS = 1000; // 10% hard cap
     uint256 public constant TIMELOCK_DELAY = 2 days;
-    uint256 public constant ORGANIZER_STAKE = 1e6; // 1 token in 6-decimal format (USDT/USDC)
-    uint256 public constant ORGANIZER_STAKE_18 = 1e18; // 1 token in 18-decimal format (USDm)
 
     uint256 public raffleCounter;
     bool public agentPaused;
@@ -57,6 +55,8 @@ contract AgentRaffleV3 is Ownable, ReentrancyGuard {
     mapping(address => bool) public allowedOrganizers;
     // Per-organizer per-token stakes: organizer => token => amount
     mapping(address => mapping(address => uint256)) public organizerStakes;
+    // Total staked amount per token (for emergencyWithdraw accounting)
+    mapping(address => uint256) public totalStakedPerToken;
     mapping(uint256 => uint256) private refundedTickets;
 
     event RaffleCreated(uint256 indexed raffleId, address indexed organizer, address paymentToken, uint256 ticketPrice, uint256 maxTickets, uint256 endTime);
@@ -97,6 +97,7 @@ contract AgentRaffleV3 is Ownable, ReentrancyGuard {
         IERC20(_token).safeTransferFrom(msg.sender, address(this), stakeAmount);
 
         organizerStakes[msg.sender][_token] = stakeAmount;
+        totalStakedPerToken[_token] += stakeAmount;
         if (!allowedOrganizers[msg.sender]) {
             allowedOrganizers[msg.sender] = true;
         }
@@ -118,9 +119,7 @@ contract AgentRaffleV3 is Ownable, ReentrancyGuard {
         }
 
         organizerStakes[msg.sender][_token] = 0;
-
-        // Check if organizer has any remaining stakes
-        // (we don't revoke allowedOrganizers here — they can still have stakes in other tokens)
+        totalStakedPerToken[_token] -= stake;
 
         IERC20(_token).safeTransfer(msg.sender, stake);
         emit OrganizerUnregistered(msg.sender, _token, stake);
@@ -225,6 +224,7 @@ contract AgentRaffleV3 is Ownable, ReentrancyGuard {
 
     /// @notice Organizer can only cancel if no tickets sold. After that, only owner can cancel.
     function cancelRaffle(uint256 _raffleId, string calldata _reason) external {
+        require(_raffleId < raffleCounter, "Raffle does not exist");
         Raffle storage raffle = raffles[_raffleId];
         require(!raffle.isDrawn, "Already drawn");
         require(!raffle.isCancelled, "Already cancelled");
@@ -308,6 +308,7 @@ contract AgentRaffleV3 is Ownable, ReentrancyGuard {
         uint256 stake = organizerStakes[_organizer][_token];
         require(stake > 0, "No stake to slash");
         organizerStakes[_organizer][_token] = 0;
+        totalStakedPerToken[_token] -= stake;
         IERC20(_token).safeTransfer(treasury, stake);
         emit OrganizerSlashed(_organizer, _token, stake, _reason);
     }
@@ -354,8 +355,9 @@ contract AgentRaffleV3 is Ownable, ReentrancyGuard {
             emit TreasuryUpdated(newTreasury);
         }
 
+        bytes32 executedType = change.changeType;
         delete pendingChanges[_changeId];
-        emit ChangeExecuted(_changeId, change.changeType);
+        emit ChangeExecuted(_changeId, executedType);
     }
 
     function cancelChange(uint256 _changeId) external onlyOwner {
@@ -411,6 +413,9 @@ contract AgentRaffleV3 is Ownable, ReentrancyGuard {
                 lockedFunds += r.ticketPrice * unrefunded;
             }
         }
+
+        // Also account for organizer stakes held in this token
+        lockedFunds += totalStakedPerToken[_token];
 
         uint256 balance = IERC20(_token).balanceOf(address(this));
         uint256 withdrawable = balance > lockedFunds ? balance - lockedFunds : 0;

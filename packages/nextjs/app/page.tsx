@@ -1,5 +1,3 @@
-"use client";
-
 import type { NextPage } from "next";
 import Link from "next/link";
 import { Lantern, SlotMachine, GoldCoin, RedEnvelope, Sparkle, Trophy, Ticket } from "~~/components/icons/ACIcons";

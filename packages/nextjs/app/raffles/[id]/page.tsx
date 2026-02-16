@@ -33,14 +33,14 @@ const ApproveAndBuy = ({
   ticketCount: number;
   onSuccess: () => void;
 }) => {
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
   const { targetNetwork } = useTargetNetwork();
   const totalCost = ticketPrice * BigInt(ticketCount);
   const { data: raffleInfo } = useDeployedContractInfo("AgentRaffleV3");
   const raffleAddress = raffleInfo?.address;
   const token = getTokenInfo(tokenAddress);
 
-  const { data: allowance } = useReadContract({
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
     address: tokenAddress as `0x${string}`,
     abi: ERC20_ABI,
     functionName: "allowance",
@@ -60,6 +60,7 @@ const ApproveAndBuy = ({
       functionName: "approve",
       args: [raffleAddress, totalCost],
     });
+    await refetchAllowance();
   };
 
   const handleBuy = async () => {
@@ -70,7 +71,7 @@ const ApproveAndBuy = ({
     onSuccess();
   };
 
-  const isWrongNetwork = useAccount().chain?.id !== targetNetwork.id;
+  const isWrongNetwork = chain?.id !== targetNetwork.id;
 
   if (isWrongNetwork) {
     return (
@@ -105,7 +106,17 @@ const ApproveAndBuy = ({
 
 export default function RaffleDetailPage() {
   const params = useParams();
-  const raffleId = BigInt(params.id as string);
+  const idStr = params.id as string;
+  let raffleId: bigint;
+  try {
+    raffleId = BigInt(idStr);
+  } catch {
+    return (
+      <div className="flex justify-center items-center grow py-16">
+        <p className="text-cny-muted text-lg">Invalid raffle ID</p>
+      </div>
+    );
+  }
   const { address } = useAccount();
   const [ticketCount, setTicketCount] = useState(1);
   const [timeLeft, setTimeLeft] = useState("");
@@ -124,13 +135,14 @@ export default function RaffleDetailPage() {
     args: [raffleId, address],
   });
 
+  const endTime = raffle?.endTime;
   useEffect(() => {
-    if (!raffle) return;
-    const update = () => setTimeLeft(formatTimeRemaining(raffle.endTime));
+    if (endTime === undefined) return;
+    const update = () => setTimeLeft(formatTimeRemaining(endTime));
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, [raffle]);
+  }, [endTime]);
 
   useEffect(() => {
     if (!raffle?.isDrawn) return;
@@ -156,10 +168,12 @@ export default function RaffleDetailPage() {
   const isActive = status.label === "Active";
   const maxBuyable = Number(raffle.maxTickets - raffle.totalTickets);
 
-  const totalPrizeNum = Number(raffle.totalPrize) / (10 ** token.decimals);
-  const winnerPrize = (totalPrizeNum * 0.95).toFixed(2);
-  const platformFee = (totalPrizeNum * 0.03).toFixed(2);
-  const organizerFee = (totalPrizeNum * 0.02).toFixed(2);
+  const platformFeeAmount = (raffle.totalPrize * 300n) / 10000n;
+  const organizerFeeAmount = (raffle.totalPrize * 200n) / 10000n;
+  const winnerPrizeAmount = raffle.totalPrize - platformFeeAmount - organizerFeeAmount;
+  const winnerPrize = formatTokenAmount(winnerPrizeAmount, token.decimals);
+  const platformFee = formatTokenAmount(platformFeeAmount, token.decimals);
+  const organizerFee = formatTokenAmount(organizerFeeAmount, token.decimals);
 
   return (
     <div className="flex flex-col items-center grow px-4 py-8">
